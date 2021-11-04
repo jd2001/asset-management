@@ -10,19 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_13_124046) do
+ActiveRecord::Schema.define(version: 2021_11_04_150510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "applications", force: :cascade do |t|
-    t.string "asset_code", null: false
+    t.string "asset_code"
     t.decimal "cost"
     t.string "cost_type"
     t.string "name", null: false
-    t.bigint "info_type_id", null: false
+    t.bigint "info_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "host_type_id"
+    t.index ["host_type_id"], name: "index_applications_on_host_type_id"
     t.index ["info_type_id"], name: "index_applications_on_info_type_id"
   end
 
@@ -35,16 +37,22 @@ ActiveRecord::Schema.define(version: 2021_09_13_124046) do
   create_table "employees", force: :cascade do |t|
     t.string "first_name", null: false
     t.string "surname"
-    t.string "email", null: false
-    t.string "phone_number", null: false
+    t.string "email"
+    t.string "phone_number"
     t.bigint "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_employees_on_company_id"
   end
 
+  create_table "host_types", force: :cascade do |t|
+    t.string "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "info_types", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -61,6 +69,7 @@ ActiveRecord::Schema.define(version: 2021_09_13_124046) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "applications", "host_types"
   add_foreign_key "applications", "info_types"
   add_foreign_key "employees", "companies"
 end
